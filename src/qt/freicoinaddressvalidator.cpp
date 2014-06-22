@@ -1,4 +1,4 @@
-#include "freicoinaddressvalidator.h"
+#include "testkojnaddressvalidator.h"
 
 /* Base58 characters are:
      "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
@@ -13,12 +13,12 @@
   - '0' and 'O' to 'o'
 */
 
-FreicoinAddressValidator::FreicoinAddressValidator(QObject *parent) :
+TestkojnAddressValidator::TestkojnAddressValidator(QObject *parent) :
     QValidator(parent)
 {
 }
 
-QValidator::State FreicoinAddressValidator::validate(QString &input, int &pos) const
+QValidator::State TestkojnAddressValidator::validate(QString &input, int &pos) const
 {
     // Correction
     for(int idx=0; idx<input.size();)

@@ -1,2 +1,2 @@
-debian/bin/freicoind usr/bin
-src/freicoind usr/lib/freicoin
+debian/bin/testkojnd usr/bin
+src/testkojnd usr/lib/testkojn

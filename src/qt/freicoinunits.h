@@ -1,27 +1,27 @@
-#ifndef FREICOINUNITS_H
-#define FREICOINUNITS_H
+#ifndef TESTKOJNUNITS_H
+#define TESTKOJNUNITS_H
 
 #include "bignum.h" // for mpq
 
 #include <QString>
 #include <QAbstractListModel>
 
-/** Freicoin unit definitions. Encapsulates parsing and formatting
+/** Testkojn unit definitions. Encapsulates parsing and formatting
    and serves as list model for dropdown selection boxes.
 */
-class FreicoinUnits: public QAbstractListModel
+class TestkojnUnits: public QAbstractListModel
 {
 public:
-    explicit FreicoinUnits(QObject *parent);
+    explicit TestkojnUnits(QObject *parent);
 
-    /** Freicoin units.
+    /** Testkojn units.
       @note Source: https://en.bitcoin.it/wiki/Units . Please add only sensible ones
      */
     enum Unit
     {
-        FRC,
-        mFRC,
-        uFRC
+        TSK,
+        mTSK,
+        uTSK
     };
 
     //! @name Static API
@@ -61,8 +61,8 @@ public:
     QVariant data(const QModelIndex &index, int role) const;
     ///@}
 private:
-    QList<FreicoinUnits::Unit> unitlist;
+    QList<TestkojnUnits::Unit> unitlist;
 };
-typedef FreicoinUnits::Unit FreicoinUnit;
+typedef TestkojnUnits::Unit TestkojnUnit;
 
-#endif // FREICOINUNITS_H
+#endif // TESTKOJNUNITS_H

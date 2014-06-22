@@ -1,6 +1,6 @@
-#include "freicoinamountfield.h"
+#include "testkojnamountfield.h"
 #include "qvaluecombobox.h"
-#include "freicoinunits.h"
+#include "testkojnunits.h"
 
 #include "guiconstants.h"
 #include "main.h"
@@ -16,7 +16,7 @@
 #include <QApplication>
 #include <qmath.h>
 
-FreicoinAmountField::FreicoinAmountField(QWidget *parent):
+TestkojnAmountField::TestkojnAmountField(QWidget *parent):
         QWidget(parent), amount(0), currentUnit(-1)
 {
     amount = new QDoubleSpinBox(this);
@@ -29,7 +29,7 @@ FreicoinAmountField::FreicoinAmountField(QWidget *parent):
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(amount);
     unit = new QValueComboBox(this);
-    unit->setModel(new FreicoinUnits(this));
+    unit->setModel(new TestkojnUnits(this));
     layout->addWidget(unit);
     layout->addStretch(1);
     layout->setContentsMargins(0,0,0,0);
@@ -47,7 +47,7 @@ FreicoinAmountField::FreicoinAmountField(QWidget *parent):
     unitChanged(unit->currentIndex());
 }
 
-void FreicoinAmountField::setText(const QString &text)
+void TestkojnAmountField::setText(const QString &text)
 {
     if (text.isEmpty())
         amount->clear();
@@ -55,16 +55,16 @@ void FreicoinAmountField::setText(const QString &text)
         amount->setValue(text.toDouble());
 }
 
-void FreicoinAmountField::clear()
+void TestkojnAmountField::clear()
 {
     amount->clear();
     unit->setCurrentIndex(0);
 }
 
-bool FreicoinAmountField::validate()
+bool TestkojnAmountField::validate()
 {
     mpq value = 0; bool valid = false;
-    if (FreicoinUnits::parse(currentUnit, text(), &value) && MoneyRange(value))
+    if (TestkojnUnits::parse(currentUnit, text(), &value) && MoneyRange(value))
         valid = true;
 
     setValid(valid);
@@ -72,7 +72,7 @@ bool FreicoinAmountField::validate()
     return valid;
 }
 
-void FreicoinAmountField::setValid(bool valid)
+void TestkojnAmountField::setValid(bool valid)
 {
     if (valid)
         amount->setStyleSheet("");
@@ -80,7 +80,7 @@ void FreicoinAmountField::setValid(bool valid)
         amount->setStyleSheet(STYLE_INVALID);
 }
 
-QString FreicoinAmountField::text() const
+QString TestkojnAmountField::text() const
 {
     if (amount->text().isEmpty())
         return QString();
@@ -88,7 +88,7 @@ QString FreicoinAmountField::text() const
         return amount->text();
 }
 
-bool FreicoinAmountField::eventFilter(QObject *object, QEvent *event)
+bool TestkojnAmountField::eventFilter(QObject *object, QEvent *event)
 {
     if (event->type() == QEvent::FocusIn)
     {
@@ -109,28 +109,28 @@ bool FreicoinAmountField::eventFilter(QObject *object, QEvent *event)
     return QWidget::eventFilter(object, event);
 }
 
-QWidget *FreicoinAmountField::setupTabChain(QWidget *prev)
+QWidget *TestkojnAmountField::setupTabChain(QWidget *prev)
 {
     QWidget::setTabOrder(prev, amount);
     return amount;
 }
 
-qint64 FreicoinAmountField::value(bool *valid_out) const
+qint64 TestkojnAmountField::value(bool *valid_out) const
 {
     mpq qValue = valueAsMpq(valid_out);
     mpz zValue = qValue.get_num() / qValue.get_den();
     return mpz_to_i64(zValue);
 }
 
-void FreicoinAmountField::setValue(qint64 value)
+void TestkojnAmountField::setValue(qint64 value)
 {
     setValue(i64_to_mpq(value));
 }
 
-mpq FreicoinAmountField::valueAsMpq(bool *valid_out) const
+mpq TestkojnAmountField::valueAsMpq(bool *valid_out) const
 {
     mpq val_out = 0;
-    bool valid = FreicoinUnits::parse(currentUnit, text(), &val_out);
+    bool valid = TestkojnUnits::parse(currentUnit, text(), &val_out);
     if(valid_out)
     {
         *valid_out = valid;
@@ -138,18 +138,18 @@ mpq FreicoinAmountField::valueAsMpq(bool *valid_out) const
     return val_out;
 }
 
-void FreicoinAmountField::setValue(const mpq& value)
+void TestkojnAmountField::setValue(const mpq& value)
 {
-    setText(FreicoinUnits::format(currentUnit, RoundAbsolute(value, ROUND_TOWARDS_ZERO)));
+    setText(TestkojnUnits::format(currentUnit, RoundAbsolute(value, ROUND_TOWARDS_ZERO)));
 }
 
-void FreicoinAmountField::unitChanged(int idx)
+void TestkojnAmountField::unitChanged(int idx)
 {
     // Use description tooltip for current unit for the combobox
     unit->setToolTip(unit->itemData(idx, Qt::ToolTipRole).toString());
 
     // Determine new unit ID
-    int newUnit = unit->itemData(idx, FreicoinUnits::UnitRole).toInt();
+    int newUnit = unit->itemData(idx, TestkojnUnits::UnitRole).toInt();
 
     // Parse current value and convert to new unit
     bool valid = false;
@@ -158,10 +158,10 @@ void FreicoinAmountField::unitChanged(int idx)
     currentUnit = newUnit;
 
     // Set max length after retrieving the value, to prevent truncation
-    amount->setDecimals(FreicoinUnits::decimals(currentUnit));
-    amount->setMaximum(qPow(10, FreicoinUnits::amountDigits(currentUnit)) - qPow(10, -amount->decimals()));
+    amount->setDecimals(TestkojnUnits::decimals(currentUnit));
+    amount->setMaximum(qPow(10, TestkojnUnits::amountDigits(currentUnit)) - qPow(10, -amount->decimals()));
 
-    if(FreicoinUnits::decimals(currentUnit)<3)
+    if(TestkojnUnits::decimals(currentUnit)<3)
         amount->setSingleStep(0.01);
     else
         amount->setSingleStep(0.001);
@@ -179,7 +179,7 @@ void FreicoinAmountField::unitChanged(int idx)
     setValid(true);
 }
 
-void FreicoinAmountField::setDisplayUnit(int newUnit)
+void TestkojnAmountField::setDisplayUnit(int newUnit)
 {
     unit->setValue(newUnit);
 }
